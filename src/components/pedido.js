@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from "react";
 
-const Pedido = ({ pedido, modalProductos }) => {
+const Pedido = ({ pedido }) => {
   //const { id } = pedido;
 
   return (

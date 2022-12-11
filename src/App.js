@@ -13,7 +13,11 @@ function App() {
   const [cargando, setCargando] = useState(true);
   const [arrayFacturas, setArrayFacturas] = useState([]);
   const [modalProductos, setModalProductos] = useState(false);
-  const [pedidoEdit, setPedidoEdit] = useState();
+  const [modalTiempo, setModalTiempo] = useState(false);
+  const [pedidoEdit, setPedidoEdit] = useState([]);
+  const [pedidoEdit2, setPedidoEdit2] = useState([]);
+  const [minutos, setMinutos] = useState(0)
+  const [segundos, setSegundos] = useState(0)
 
   //Url usadas
   const baseUrl = "http://127.0.0.1:8000";
@@ -68,6 +72,24 @@ function App() {
     });
   };
 
+  //Actualizar tiempo
+  const ActualizarPedido = () => {
+    if (pedidoEdit !== undefined) {
+      const db = getDatabase();
+      const reference = ref(db, "pedidos/" + pedidoEdit2.idFactura);
+
+      set(reference, {
+        idFactura: pedidoEdit2.idFactura,
+        productos: pedidoEdit2.productos,
+        estado: "Tiempo asignado",
+        mesa: pedidoEdit2.mesa,
+        tiempo: "Nuevo tiempo",
+      });
+
+      console.log(pedidoEdit2);
+    }
+  };
+
   let pedido = {
     idFactura: 1,
   };
@@ -83,8 +105,8 @@ function App() {
   };
 
   const DesplegarProductos = () => {
-    if (pedidoEdit != undefined) {
-      console.log(pedidoEdit)
+    if (pedidoEdit !== undefined) {
+      console.log(pedidoEdit);
       return pedidoEdit.map((producto) => (
         <Productos key={producto.producto.id} producto={producto} />
       ));
@@ -94,6 +116,12 @@ function App() {
   const modalProductosMetodo = (pedido) => {
     setPedidoEdit(pedido);
     setModalProductos(true);
+  };
+
+  const modalActualizarTiempo = (pedido, pedido2) => {
+    setPedidoEdit(pedido);
+    setPedidoEdit2(pedido2);
+    setModalTiempo(true);
   };
 
   const Pedido = ({ pedido }) => {
@@ -108,7 +136,17 @@ function App() {
             </div>
             <div className="lg:w-1/24 xl:w-1/24 pl-5">
               <p className="font-bold text-2xl text-yellow-600 mb-4">
-                {pedido.estado}{" "}
+                Estado: {pedido.estado}{" "}
+              </p>
+            </div>
+            <div className="lg:w-1/24 xl:w-1/24 pl-5">
+              <p className="font-bold text-2xl text-yellow-600 mb-4">
+                Tiempo asignado: {pedido.tiempo}{" "}
+              </p>
+            </div>
+            <div className="lg:w-1/24 xl:w-1/24 pl-5">
+              <p className="font-bold text-2xl text-yellow-600 mb-4">
+                Mesa: {pedido.mesa}{" "}
               </p>
             </div>
             <div className="lg:w-1/24 xl:w-1/24 pl-5">
@@ -118,6 +156,15 @@ function App() {
                 }}
               >
                 Ver productos
+              </button>
+            </div>
+            <div className="lg:w-1/24 xl:w-1/24 pl-5">
+              <button
+                onClick={() => {
+                  modalActualizarTiempo(pedido.productos, pedido);
+                }}
+              >
+                Actualizar tiempo
               </button>
             </div>
           </div>
@@ -148,7 +195,7 @@ function App() {
         <div className="md:w-6/6 xl:w-5/5 bg-gray-800">
           <div className="p-6">
             <p className="uppercase text-white text-2xl tracking-wide text-center font-bold">
-              RestaurantApp
+              Administración de pedidos restaurant
             </p>
           </div>
         </div>
@@ -160,6 +207,26 @@ function App() {
           <button
             onClick={() => {
               setModalProductos(false);
+            }}
+          >
+            Close Modal
+          </button>
+        </div>
+      </ReactModal>
+      <ReactModal isOpen={modalTiempo} contentLabel="Minimal Modal Example">
+        <div>
+          <h2>Ingrese el tiempo:</h2>
+          <input type="text" value={minutos} onChange={setMinutos} />
+          <button
+            onClick={() => {
+              ActualizarPedido();
+            }}
+          >
+            Actualizar
+          </button>
+          <button
+            onClick={() => {
+              setModalTiempo(false);
             }}
           >
             Close Modal
