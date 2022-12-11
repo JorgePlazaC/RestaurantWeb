@@ -169,7 +169,7 @@ function App() {
             </div>
             <div className="lg:w-1/24 xl:w-1/24 pl-5">
               <p className="font-bold text-2xl text-yellow-600 mb-4">
-                {pedido.tiempo}{" "}
+                {parseInt(pedido.tiempo/60)} minutos
               </p>
             </div>
             <div className="lg:w-1/24 xl:w-1/24 pl-5">
