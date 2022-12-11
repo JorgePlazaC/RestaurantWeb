@@ -78,12 +78,16 @@ function App() {
       const db = getDatabase();
       const reference = ref(db, "pedidos/" + pedidoEdit2.idFactura);
 
+      let tiempoSegundos = (minutos*60)+parseInt(segundos)
+
+      console.log(tiempoSegundos)
+
       set(reference, {
         idFactura: pedidoEdit2.idFactura,
         productos: pedidoEdit2.productos,
         estado: "Tiempo asignado",
         mesa: pedidoEdit2.mesa,
-        tiempo: "Nuevo tiempo",
+        tiempo: tiempoSegundos,
       });
 
       console.log(pedidoEdit2);
@@ -216,7 +220,10 @@ function App() {
       <ReactModal isOpen={modalTiempo} contentLabel="Minimal Modal Example">
         <div>
           <h2>Ingrese el tiempo:</h2>
-          <input type="text" value={minutos} onChange={setMinutos} />
+          <h2>Minutos:</h2>
+          <input type="text" value={minutos} onChange={(valor) => setMinutos(valor.target.value)} />
+          <h2>Segundos:</h2>
+          <input type="text" value={segundos} onChange={(valor) => setSegundos(valor.target.value)} />
           <button
             onClick={() => {
               ActualizarPedido();
